@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/samylla-dev/treino-api#readme",
   "dependencies": {
+    "better-sqlite3": "^13.2.0",
     "express": "^5.3.0"
   }
 }
