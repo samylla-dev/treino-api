@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Produtos do Hortifruti</title>
+</head>
+<body>
+  <h1>Produtos do Hortifruti</h1>
+
+  <input id="codigo" placeholder="Código">
+  <input id="nome" placeholder="Nome">
+  <input id="preco" type="number" step="0.01" placeholder="Preço">
+  <button id="salvar">Salvar</button>
+
+  <p id="mensagem"></p>
+  <ul id="lista"></ul>
+
+  <script>
+    async function carregar() {
+      const resposta = await fetch('/produtos');
+      const produtos = await resposta.json();
+
+      document.querySelector('#lista').innerHTML = produtos
+        .map(p => `<li>${p.codigo} - ${p.nome} - R$ ${p.preco}</li>`)
+        .join('');
+    }
+
+    document.querySelector('#salvar').addEventListener('click', async () => {
+      const novoProduto = {
+        codigo: document.querySelector('#codigo').value,
+        nome: document.querySelector('#nome').value,
+        preco: Number(document.querySelector('#preco').value)
+      };
+
+      const resposta = await fetch('/produtos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(novoProduto)
+      });
+
+      const dados = await resposta.json();
+
+      if (resposta.ok) {
+        document.querySelector('#mensagem').textContent = 'Produto salvo!';
+        carregar();
+      } else {
+        document.querySelector('#mensagem').textContent = dados.erro;
+      }
+    });
+
+    carregar();
+  </script>
+</body>
+</html>
